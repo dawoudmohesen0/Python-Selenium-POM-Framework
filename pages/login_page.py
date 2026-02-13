@@ -6,21 +6,27 @@ from selenium.webdriver.support import expected_conditions as EC
 class LoginPage:
     def __init__(self, driver):
         self.driver = driver
-        self.url = "https://www.facebook.com/"
-        # تحديد العناصر باستخدام Locators
-        self.email_input = (By.ID, "email")
-        self.pass_input = (By.ID, "pass")
+        self.url = "https://www.facebook.com"  # أو أي موقع بدك تفحصه
+
+        # المعرفات (Locators)
+        self.email_field = (By.ID, "email")
+        self.password_field = (By.ID, "pass")
         self.login_button = (By.NAME, "login")
 
     def load(self):
         self.driver.get(self.url)
 
     def login(self, username, password):
-        # استخدام Explicit Wait بدلاً من time.sleep
         wait = WebDriverWait(self.driver, 10)
 
-        email_field = wait.until(EC.presence_of_element_located(self.email_input))
-        email_field.send_keys(username)
+        # كتابة البيانات
+        wait.until(EC.presence_of_element_located(self.email_field)).send_keys(username)
+        wait.until(EC.presence_of_element_located(self.password_field)).send_keys(password)
 
-        self.driver.find_element(*self.pass_input).send_keys(password)
-        self.driver.find_element(*self.login_button).click()
+        # الضغط على زر الدخول
+        wait.until(EC.element_to_be_clickable(self.login_button)).click()
+
+    # دالة تصوير الشاشة
+    def take_screenshot(self, name):
+        self.driver.save_screenshot(f"{name}.png")
+        print(f"📸 Screenshot saved as: {name}.png")
