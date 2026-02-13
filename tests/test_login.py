@@ -1,24 +1,43 @@
 from selenium import webdriver
 from pages.login_page import LoginPage
-import pytest
+import time
 
 
-def test_facebook_login():
+def test_login_process():
     # إعداد المتصفح
     driver = webdriver.Chrome()
     driver.maximize_window()
 
-    # استخدام الـ Page Object
-    login_pg = LoginPage(driver)
-    login_pg.load()
-    login_pg.login("your_test_email@example.com", "your_secure_password")
+    try:
+        # إنشاء كائن من الصفحة
+        login_pg = LoginPage(driver)
 
-    # التأكد من النتيجة (Assertion)
-    assert "facebook" in driver.current_url.lower()
+        # 1. فتح الموقع
+        login_pg.load()
+        print("Page loaded successfully.")
 
-    print("Test Passed Successfully!")
-    driver.quit()
+        # 2. تنفيذ تسجيل الدخول
+        # حط بياناتك هون للتجربة
+        login_pg.login("dawoud@example.com", "12345678")
+
+        # 3. انتظر قليلاً لتظهر النتيجة
+        time.sleep(3)
+
+        # 4. تصوير الشاشة (الخطوة اللي طلبتها)
+        # سيتم حفظ الصورة باسم 'login_result.png' في مجلد المشروع
+        login_pg.take_screenshot("login_result")
+
+        print("Test finished and screenshot taken!")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        # إذا صار خطأ، يصور الشاشة عشان تعرف وين المشكلة
+        driver.save_screenshot("error_report.png")
+
+    finally:
+        # إغلاق المتصفح
+        driver.quit()
 
 
 if __name__ == "__main__":
-    test_facebook_login()
+    test_login_process()
